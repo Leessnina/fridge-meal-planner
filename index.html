@@ -40,87 +40,67 @@ body {
 button { font-family: inherit; cursor: pointer; border: none; outline: none; }
 input, textarea, select { font-family: inherit; outline: none; }
 
-/* ========== Layout ========== */
-.container { max-width: 520px; margin: 0 auto; padding: 16px 16px 120px; }
-
-/* ========== Header ========== */
-.header {
+/* ========== Sticky Top Bar ========== */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(255,249,242,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gray);
+  padding: 10px 16px;
   text-align: center;
-  padding: 24px 0 8px;
 }
-.header .emoji { font-size: 48px; display: block; margin-bottom: 4px; }
-.header h1 {
-  font-size: 26px;
+.top-bar .logo {
+  font-size: 22px;
   font-weight: 800;
   color: var(--brown);
   letter-spacing: 1px;
-}
-.header .subtitle {
-  font-size: 13px;
-  color: var(--text-lt);
-  margin-top: 2px;
-}
-
-/* ========== Section Cards ========== */
-.section {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px 18px;
-  margin-bottom: 14px;
-  transition: all 0.35s ease;
-}
-.section-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  user-select: none;
-}
-.section-header.clickable { cursor: pointer; }
-.section-header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--brown);
-  display: flex;
-  align-items: center;
+  justify-content: center;
   gap: 6px;
 }
-.section-header .arrow {
-  font-size: 12px;
-  color: var(--gray-dk);
-  transition: transform 0.25s;
+.top-bar .subtitle {
+  font-size: 11px;
+  color: var(--text-lt);
 }
-.section-header.collapsed .arrow { transform: rotate(-90deg); }
-.section-body { overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s; }
-.section-body.hidden { max-height: 0 !important; opacity: 0; }
 
-/* ========== Filter Collapse Wrapper ========== */
-.filter-area { transition: all 0.35s ease; }
-.filter-collapse-bar {
+/* ========== Layout ========== */
+.container { max-width: 520px; margin: 0 auto; padding: 8px 12px 120px; }
+
+/* ========== Filter Summary Bar ========== */
+.filter-summary-bar {
   display: none;
-  background: var(--orange-lt);
+  position: sticky;
+  top: 62px;
+  z-index: 199;
+  background: rgba(255,240,232,0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1.5px dashed var(--orange);
   border-radius: var(--radius);
-  padding: 10px 14px;
-  margin-bottom: 14px;
-  text-align: center;
-  font-size: 13px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--orange-dk);
   cursor: pointer;
+  text-align: center;
   transition: all 0.2s;
 }
-.filter-collapse-bar:hover { background: #FFE4D0; }
-.filter-collapse-bar .summary { font-weight: 400; color: var(--brown-lt); }
+.filter-summary-bar.show { display: block; }
+.filter-summary-bar:active { background: #FFE4D0; }
+.filter-summary-bar .summary-text { font-weight: 400; color: var(--brown-lt); }
 
-/* Floating expand button */
+/* ========== Floating Filter Button ========== */
 .fab-filter {
   display: none;
   position: fixed;
-  bottom: 100px;
+  bottom: 24px;
   right: 16px;
-  z-index: 101;
+  z-index: 201;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -135,20 +115,54 @@ input, textarea, select { font-family: inherit; outline: none; }
 .fab-filter.show { display: flex; }
 .fab-filter:active { transform: scale(0.92); }
 
+/* ========== Section Cards ========== */
+.section {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  transition: all 0.35s ease;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  user-select: none;
+}
+.section-header.clickable { cursor: pointer; }
+.section-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--brown);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.section-header .arrow {
+  font-size: 11px;
+  color: var(--gray-dk);
+  transition: transform 0.25s;
+}
+.section-header.collapsed .arrow { transform: rotate(-90deg); }
+.section-body { overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s; }
+.section-body.hidden { max-height: 0 !important; opacity: 0; }
+
 /* ========== Condiment Grid ========== */
 .condiment-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 7px;
 }
 .condiment-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 7px 8px;
+  gap: 4px;
+  padding: 6px 7px;
   border-radius: 8px;
   background: var(--bg);
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.18s;
   border: 1.5px solid transparent;
@@ -162,13 +176,13 @@ input, textarea, select { font-family: inherit; outline: none; }
 }
 .condiment-item input { display: none; }
 .condiment-item .dot {
-  width: 16px; height: 16px;
+  width: 15px; height: 15px;
   border-radius: 4px;
   border: 1.5px solid var(--gray-dk);
   background: #fff;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   transition: all 0.18s;
 }
 .condiment-item.checked .dot {
@@ -176,30 +190,30 @@ input, textarea, select { font-family: inherit; outline: none; }
   border-color: var(--orange);
 }
 
-/* ========== Ingredient Categories ========== */
+/* ========== Ingredient Grid ========== */
 .cat-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--brown-lt);
-  margin: 10px 0 6px;
+  margin: 8px 0 5px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 .cat-label:first-child { margin-top: 0; }
 .ingredient-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 7px;
+  gap: 5px;
 }
 .ingredient-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 8px 10px;
+  gap: 4px;
+  padding: 6px 8px;
   border-radius: 8px;
   background: var(--bg);
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.18s;
   border: 1.5px solid transparent;
@@ -214,56 +228,67 @@ input, textarea, select { font-family: inherit; outline: none; }
 }
 .ingredient-item input { display: none; }
 .ingredient-item .dot {
-  width: 16px; height: 16px;
+  width: 15px; height: 15px;
   border-radius: 4px;
   border: 1.5px solid var(--gray-dk);
   background: #fff;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   transition: all 0.18s;
 }
 .ingredient-item.checked .dot {
   background: var(--orange);
   border-color: var(--orange);
 }
-
-/* Delete button on custom ingredients */
 .ingredient-item .del-btn {
   display: none;
   margin-left: auto;
-  width: 18px; height: 18px;
+  width: 16px; height: 16px;
   border-radius: 50%;
   background: var(--red);
   color: #fff;
-  font-size: 11px;
-  line-height: 18px;
+  font-size: 10px;
+  line-height: 16px;
   text-align: center;
   cursor: pointer;
+  flex-shrink: 0;
 }
-.ingredient-item.custom:hover .del-btn { display: block; }
+.ingredient-item:hover .del-btn { display: block; }
 
 /* ========== Custom Ingredient Input ========== */
 .custom-ing-area {
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed var(--gray);
   display: flex;
-  gap: 7px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 .custom-ing-area input {
   flex: 1;
+  min-width: 80px;
   border: 1.5px solid var(--gray);
   border-radius: 8px;
-  padding: 7px 10px;
-  font-size: 13px;
+  padding: 6px 8px;
+  font-size: 12px;
   background: var(--bg);
 }
 .custom-ing-area input:focus { border-color: var(--orange); }
-.custom-ing-area button {
-  padding: 7px 14px;
+.custom-ing-area select {
+  border: 1.5px solid var(--gray);
   border-radius: 8px;
-  font-size: 13px;
+  padding: 6px 8px;
+  font-size: 12px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+.custom-ing-area select:focus { border-color: var(--orange); }
+.custom-ing-area button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 600;
   background: var(--orange);
   color: #fff;
@@ -272,42 +297,51 @@ input, textarea, select { font-family: inherit; outline: none; }
 }
 .custom-ing-area button:active { transform: scale(0.95); }
 
-/* ========== Selected Ingredient State Panel ========== */
+.restore-link {
+  font-size: 11px;
+  color: var(--blue);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+/* ========== State Panel ========== */
 .state-panel { display: none; }
 .state-panel.active { display: block; }
 .state-item {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
+  gap: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
   background: var(--bg);
   border-radius: 10px;
   border: 1px solid var(--gray);
 }
 .state-item .ing-name {
   font-weight: 700;
-  font-size: 14px;
-  min-width: 50px;
+  font-size: 13px;
+  min-width: 40px;
   color: var(--brown);
 }
 .state-item .state-group {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   flex-wrap: wrap;
 }
 .state-item .state-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-lt);
-  margin-right: 2px;
+  margin-right: 1px;
   white-space: nowrap;
 }
 .tag-btn {
-  padding: 4px 10px;
-  border-radius: 14px;
-  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
   background: #fff;
   color: var(--text-lt);
   border: 1px solid var(--gray);
@@ -321,57 +355,51 @@ input, textarea, select { font-family: inherit; outline: none; }
   border-color: var(--orange);
   font-weight: 600;
 }
-.tag-btn.wilted.active {
-  background: var(--red);
-  border-color: var(--red);
-}
-.tag-btn.frozen.active {
-  background: var(--blue);
-  border-color: var(--blue);
-}
+.tag-btn.wilted.active { background: var(--red); border-color: var(--red); }
+.tag-btn.frozen.active { background: var(--blue); border-color: var(--blue); }
 
 /* ========== Restrictions ========== */
 .restrict-input-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
   align-items: center;
 }
 .restrict-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 14px;
-  font-size: 12px;
+  gap: 3px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11px;
   background: var(--red-lt);
   color: var(--red);
   font-weight: 600;
 }
 .restrict-tag .x {
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
   opacity: 0.6;
 }
 .restrict-tag .x:hover { opacity: 1; }
 #restrict-input {
   flex: 1;
-  min-width: 100px;
+  min-width: 80px;
   border: 1.5px solid var(--gray);
   border-radius: 8px;
-  padding: 7px 10px;
-  font-size: 13px;
+  padding: 6px 8px;
+  font-size: 12px;
   background: var(--bg);
 }
 #restrict-input:focus { border-color: var(--orange); }
 .quick-restrict {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 6px;
 }
-.quick-restrict .tag-btn { font-size: 11px; padding: 3px 9px; }
+.quick-restrict .tag-btn { font-size: 10px; padding: 2px 7px; }
 
 /* ========== Main CTA ========== */
 .cta-wrap {
@@ -379,7 +407,7 @@ input, textarea, select { font-family: inherit; outline: none; }
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 12px 16px 20px;
+  padding: 10px 14px 18px;
   background: linear-gradient(transparent, var(--bg) 40%);
   z-index: 100;
   display: flex;
@@ -388,10 +416,10 @@ input, textarea, select { font-family: inherit; outline: none; }
 .cta-btn {
   width: 100%;
   max-width: 488px;
-  padding: 14px;
-  font-size: 17px;
+  padding: 13px;
+  font-size: 16px;
   font-weight: 700;
-  border-radius: 28px;
+  border-radius: 26px;
   background: linear-gradient(135deg, var(--orange), #F0965C);
   color: #fff;
   box-shadow: 0 4px 20px rgba(232,120,59,0.35);
@@ -399,59 +427,65 @@ input, textarea, select { font-family: inherit; outline: none; }
   letter-spacing: 1px;
 }
 .cta-btn:active { transform: scale(0.97); opacity: 0.9; }
-.cta-btn:disabled {
-  background: var(--gray);
-  box-shadow: none;
-  color: var(--gray-dk);
-}
 
-/* ========== Results ========== */
-.results-area { margin-top: 6px; }
+/* ========== Results Grid ========== */
+.results-area { margin-top: 4px; }
 .results-header {
   text-align: center;
-  margin-bottom: 12px;
-  font-size: 14px;
+  margin-bottom: 10px;
+  font-size: 13px;
   color: var(--text-lt);
 }
-.results-header strong { color: var(--orange); font-size: 18px; }
+.results-header strong { color: var(--orange); font-size: 16px; }
 .empty-state {
   text-align: center;
-  padding: 48px 20px;
+  padding: 40px 16px;
   color: var(--text-lt);
 }
-.empty-state .big-emoji { font-size: 64px; display: block; margin-bottom: 12px; }
+.empty-state .big-emoji { font-size: 56px; display: block; margin-bottom: 10px; }
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
 .recipe-card {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px;
-  margin-bottom: 14px;
-  border-left: 4px solid var(--orange);
+  padding: 14px;
+  border-left: 3px solid var(--orange);
   transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .recipe-card.top-pick { border-left-color: var(--red); box-shadow: var(--shadow-lg); }
 .recipe-card .card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 6px;
+  gap: 6px;
 }
 .recipe-card .card-header h3 {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--brown);
+  flex: 1;
+  min-width: 0;
 }
 .recipe-card .badges {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
 .badge {
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -462,48 +496,26 @@ input, textarea, select { font-family: inherit; outline: none; }
 .badge-wilted { background: var(--red-lt); color: var(--red); animation: pulse 1.5s ease infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
 
-/* Match percentage badge */
 .match-pct {
   display: inline-block;
-  padding: 4px 10px;
-  border-radius: 14px;
-  font-size: 13px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.5px;
 }
 .match-pct.high { background: #D4EDDA; color: #2D6A3F; }
 .match-pct.mid  { background: #FFF3CD; color: #B8860B; }
 .match-pct.low  { background: #FCE4E4; color: #C0392B; }
 
-/* Missing summary box */
-.missing-summary {
-  background: #FFFBF5;
-  border: 1px solid #F0E4D0;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 1.7;
-}
-.missing-summary .ms-title {
-  font-weight: 700;
-  color: var(--brown);
-  margin-bottom: 2px;
-}
-.missing-summary .ms-row {
-  color: var(--text-lt);
-}
-
 .recipe-card .tags-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 4px;
 }
 .tag-sm {
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 10px;
   background: var(--bg);
   color: var(--brown-lt);
 }
@@ -511,49 +523,71 @@ input, textarea, select { font-family: inherit; outline: none; }
 .tag-sm.miss   { background: var(--red-lt);  color: var(--red);  font-weight: 600; }
 .tag-sm.sub-ok { background: #FFF8E1; color: #C8960E; font-weight: 600; }
 
+.missing-summary {
+  background: #FFFBF5;
+  border: 1px solid #F0E4D0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.missing-summary .ms-title { font-weight: 700; color: var(--brown); }
+.missing-summary .ms-row { color: var(--text-lt); }
+
 .recipe-card .steps-list {
-  margin: 8px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
+.steps-list.collapsed { max-height: 0; }
 .recipe-card .steps-list li {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-lt);
-  padding: 3px 0 3px 18px;
+  padding: 2px 0 2px 15px;
   position: relative;
 }
 .recipe-card .steps-list li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 10px;
-  width: 7px;
-  height: 7px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--orange);
   opacity: 0.5;
 }
+.steps-toggle {
+  font-size: 11px;
+  color: var(--orange);
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  padding: 4px;
+  user-select: none;
+}
 
 .search-links {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .search-link {
   flex: 1;
-  min-width: 100px;
+  min-width: 80px;
   text-align: center;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-size: 11px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.18s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
 }
 .search-link.xhs { background: #FFF0E8; color: #E8783B; border: 1px solid #FAD5C0; }
 .search-link.bili { background: #FDE8F0; color: #E85B81; border: 1px solid #FAC0D3; }
@@ -562,99 +596,104 @@ input, textarea, select { font-family: inherit; outline: none; }
 /* ========== Tip Box ========== */
 .tip-box {
   background: var(--orange-lt);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-top: 8px;
-  font-size: 12px;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
   color: var(--orange-dk);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 /* ========== Recipe Editor ========== */
-.recipe-editor { display: none; margin-top: 14px; }
+.recipe-editor { display: none; margin-top: 12px; }
 .recipe-editor.active { display: block; }
-.editor-row {
-  margin-bottom: 10px;
-}
+.editor-row { margin-bottom: 8px; }
 .editor-row label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--brown-lt);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .editor-row input, .editor-row textarea {
   width: 100%;
   border: 1.5px solid var(--gray);
   border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 13px;
+  padding: 7px 9px;
+  font-size: 12px;
   background: var(--bg);
 }
 .editor-row input:focus, .editor-row textarea:focus { border-color: var(--orange); }
-.editor-row textarea { min-height: 80px; resize: vertical; }
+.editor-row textarea { min-height: 60px; resize: vertical; }
 .editor-ing-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  max-height: 160px;
+  gap: 4px;
+  max-height: 140px;
   overflow-y: auto;
   padding: 4px;
   background: var(--bg);
   border-radius: 8px;
 }
 .editor-ing-grid label {
-  font-size: 11px;
+  font-size: 10px;
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 4px 6px;
+  gap: 2px;
+  padding: 3px 5px;
   border-radius: 6px;
   cursor: pointer;
 }
 .editor-ing-grid label:hover { background: #fff; }
 .editor-ing-grid input[type="checkbox"] { width: auto; }
-.diff-picker { display: flex; gap: 6px; }
-.diff-picker .tag-btn { font-size: 13px; padding: 6px 14px; }
-.editor-actions { display: flex; gap: 8px; margin-top: 12px; }
+.diff-picker { display: flex; gap: 5px; }
+.diff-picker .tag-btn { font-size: 12px; padding: 5px 12px; }
+.editor-actions { display: flex; gap: 6px; margin-top: 10px; }
 .editor-actions button {
   flex: 1;
-  padding: 10px;
-  border-radius: 20px;
-  font-size: 14px;
+  padding: 8px;
+  border-radius: 18px;
+  font-size: 13px;
   font-weight: 700;
 }
 .btn-primary { background: var(--orange); color: #fff; }
 .btn-outline { background: #fff; color: var(--orange); border: 1.5px solid var(--orange); }
-.btn-danger  { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
-.custom-recipe-list { margin-top: 12px; }
+.btn-danger  { background: #fff; color: var(--red); border: 1.5px solid var(--red); font-size: 12px; padding: 6px 12px; }
+.custom-recipe-list { margin-top: 10px; }
 .custom-recipe-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
-  margin-bottom: 5px;
+  padding: 7px 9px;
+  margin-bottom: 4px;
   background: var(--bg);
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .custom-recipe-item .cr-name { font-weight: 600; color: var(--brown); }
-.custom-recipe-item .cr-meta { font-size: 11px; color: var(--text-lt); }
+.custom-recipe-item .cr-meta { font-size: 10px; color: var(--text-lt); }
 .custom-recipe-item .cr-del {
   color: var(--red);
   cursor: pointer;
-  font-size: 16px;
-  padding: 0 4px;
+  font-size: 15px;
+  padding: 0 3px;
 }
 
 /* ========== Responsive ========== */
-@media (min-width: 520px) {
-  .container { padding: 20px 0 120px; }
-  .condiment-grid { grid-template-columns: repeat(5, 1fr); }
+@media (min-width: 481px) {
+  .container { max-width: 720px; }
+  .condiment-grid { grid-template-columns: repeat(6, 1fr); }
   .ingredient-grid { grid-template-columns: repeat(4, 1fr); }
   .editor-ing-grid { grid-template-columns: repeat(5, 1fr); }
+  .results-grid { grid-template-columns: repeat(2, 1fr); }
+  .recipe-card .card-header h3 { font-size: 16px; }
+}
+@media (min-width: 768px) {
+  .container { max-width: 860px; }
+  .condiment-grid { grid-template-columns: repeat(7, 1fr); }
+  .ingredient-grid { grid-template-columns: repeat(5, 1fr); }
+  .results-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 }
 @media (max-width: 360px) {
   .condiment-grid { grid-template-columns: repeat(3, 1fr); }
@@ -666,22 +705,21 @@ input, textarea, select { font-family: inherit; outline: none; }
 </head>
 <body>
 
+<!-- ===== Top Bar ===== -->
+<div class="top-bar" id="top-bar">
+  <div class="logo"><span>🥘</span> 食材盘点器</div>
+  <div class="subtitle">打开冰箱，3秒决定今晚吃什么</div>
+</div>
+
 <div class="container">
 
-  <!-- ===== Header ===== -->
-  <div class="header">
-    <span class="emoji">🥘</span>
-    <h1>食材盘点器</h1>
-    <p class="subtitle">打开冰箱，3秒决定今晚吃什么</p>
+  <!-- ===== 筛选摘要条（折叠状态） ===== -->
+  <div class="filter-summary-bar" id="filter-summary-bar" onclick="expandFilters()">
+    📋 <span class="summary-text" id="summary-text"></span> — <span style="text-decoration:underline;">点击展开调整</span> ▼
   </div>
 
-  <!-- ===== 筛选区域（可折叠） ===== -->
+  <!-- ===== 筛选区域 ===== -->
   <div class="filter-area" id="filter-area">
-
-    <!-- 筛选折叠条 -->
-    <div class="filter-collapse-bar" id="filter-collapse-bar" onclick="expandFilters()">
-      📋 <span id="collapse-summary"></span> — <span style="text-decoration:underline;">点击展开调整</span> ▼
-    </div>
 
     <!-- ===== 调料库存 ===== -->
     <div class="section" id="condiment-section">
@@ -690,7 +728,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         <span class="arrow">▼</span>
       </div>
       <div class="section-body" id="condiment-body">
-        <p style="font-size:11px;color:var(--text-lt);margin-bottom:8px;">勾选家中现有的，设置一次自动记住（下次打开还在）</p>
+        <p style="font-size:10px;color:var(--text-lt);margin-bottom:7px;">勾选家中现有的，设置一次自动记住（下次打开还在）</p>
         <div class="condiment-grid" id="condiment-grid"></div>
       </div>
     </div>
@@ -706,17 +744,30 @@ input, textarea, select { font-family: inherit; outline: none; }
 
         <!-- 已选食材状态 -->
         <div class="state-panel" id="state-panel">
-          <div style="font-size:13px;font-weight:700;color:var(--brown);margin-bottom:8px;">
-            📋 食材状态设定 <span style="font-weight:400;font-size:11px;color:var(--text-lt);">（调整剩余量与赏味期）</span>
+          <div style="font-size:12px;font-weight:700;color:var(--brown);margin-bottom:6px;">
+            📋 食材状态设定 <span style="font-weight:400;font-size:10px;color:var(--text-lt);">（调整剩余量与赏味期）</span>
           </div>
           <div id="state-list"></div>
         </div>
 
         <!-- 自定义食材输入 -->
         <div class="custom-ing-area">
-          <input type="text" id="custom-ing-input" placeholder="+ 添加自定义食材（如腊肠、芝士）" maxlength="20">
+          <input type="text" id="custom-ing-input" placeholder="+ 添加自定义食材" maxlength="20">
+          <select id="custom-ing-category">
+            <option value="🥬 蔬菜">🥬 蔬菜</option>
+            <option value="🥩 肉类">🥩 肉类</option>
+            <option value="🍚 主食">🍚 主食</option>
+            <option value="🫘 豆制品">🫘 豆制品</option>
+            <option value="🥛 蛋奶">🥛 蛋奶</option>
+            <option value="📦 其他">📦 其他</option>
+          </select>
           <button onclick="addCustomIngredient()">添加</button>
         </div>
+
+        <!-- 恢复已删除预设食材 -->
+        <span class="restore-link" id="restore-link" style="display:none;" onclick="restoreDeletedPresets()">
+          🔄 恢复已删除的预设食材
+        </span>
       </div>
     </div>
 
@@ -755,7 +806,7 @@ input, textarea, select { font-family: inherit; outline: none; }
       <span style="font-size:11px;color:var(--text-lt);" id="custom-recipe-count">0 个自定义菜谱</span>
     </div>
     <div class="section-body" id="editor-body">
-      <p style="font-size:11px;color:var(--text-lt);margin-bottom:10px;">在此添加你的私房菜谱，将与内置菜谱一起参与匹配推荐。</p>
+      <p style="font-size:10px;color:var(--text-lt);margin-bottom:8px;">添加你的私房菜谱，与内置菜谱一起参与匹配推荐。</p>
       <div class="editor-row">
         <label>🍳 菜名</label>
         <input type="text" id="cr-name" placeholder="例：土豆烧排骨" maxlength="30">
@@ -798,21 +849,23 @@ input, textarea, select { font-family: inherit; outline: none; }
 
 </div>
 
-<!-- ===== 菜谱数据文件（独立维护） ===== -->
+<!-- ===== 菜谱数据文件 ===== -->
 <script src="recipes.js"></script>
 
 <script>
 // ======================== DATA ========================
 
-/** Ingredient categories */
+/** Ingredient categories (v2.0 expanded) */
 const INGREDIENT_CATEGORIES = {
-  '🥬 蔬菜': ['番茄','南瓜','青菜','土豆','茄子','青椒','白菜','胡萝卜','洋葱','黄瓜','豆角','西兰花','玉米','豆腐'],
-  '🥩 肉类': ['鸡蛋','鸡胸肉','五花肉','牛肉','虾仁','排骨'],
-  '🍚 主食': ['米饭','面条','粉丝'],
+  '🥬 蔬菜': ['番茄','南瓜','青菜','土豆','茄子','青椒','白菜','胡萝卜','洋葱','黄瓜','豆角','西兰花','玉米','蘑菇','金针菇','冬瓜','丝瓜','辣椒','豆芽','莲藕','山药','生菜','芹菜','花菜','西葫芦','秋葵','荷兰豆','莴笋','茼蒿','苦瓜'],
+  '🥩 肉类': ['鸡蛋','鸡胸肉','五花肉','牛肉','虾仁','排骨','腊肠','火腿','培根','鸡腿','牛肉丸','午餐肉','鱼'],
+  '🍚 主食': ['米饭','面条','粉丝','饺子','馒头','面包'],
+  '🫘 豆制品': ['豆腐','腐竹','豆皮','毛豆','豆干','油豆腐'],
+  '🥛 蛋奶': ['芝士','皮蛋','咸鸭蛋','牛奶','黄油'],
 };
 
 /** All condiments */
-const ALL_CONDIMENTS = ['盐','糖','生抽','老抽','蚝油','料酒','醋','葱','姜','蒜','淀粉','豆瓣酱','番茄酱','胡椒粉','鸡精','香油','干辣椒'];
+const ALL_CONDIMENTS = ['盐','糖','生抽','老抽','蚝油','料酒','醋','葱','姜','蒜','淀粉','豆瓣酱','番茄酱','胡椒粉','鸡精','香油','干辣椒','豆豉'];
 
 /** Substitution dictionary */
 const SUBSTITUTES = {
@@ -825,29 +878,20 @@ const SUBSTITUTES = {
   '豆瓣酱': { items: ['生抽','干辣椒'], note: '生抽 + 辣椒替代，风味相近' },
   '胡椒粉': { items: [],              note: '可省略，不影响主体风味' },
   '番茄酱': { items: ['番茄'],        note: '可用新鲜番茄炒出汁代替' },
+  '豆豉':   { items: ['生抽'],        note: '用生抽替代，缺少独特豉香但可食用' },
 };
 
 /** Common dietary restrictions for quick-add */
-const COMMON_RESTRICTIONS = ['香菜','内脏','海鲜','辣椒','姜','蒜','胡萝卜','洋葱','肥肉','羊肉'];
+const COMMON_RESTRICTIONS = ['香菜','内脏','海鲜','辣椒','姜','蒜','胡萝卜','洋葱','肥肉','羊肉','芝士','牛奶'];
 
 // ======================== STATE ========================
 
-/** Selected condiments (Set of strings) — persisted to localStorage */
 let selectedCondiments = new Set();
-
-/** Selected ingredients: Map<ingName, { quantity, freshness }> */
 let ingredientState = new Map();
-
-/** Dietary restriction tags */
 let restrictions = [];
-
-/** Custom ingredients (persisted to localStorage) */
 let customIngredients = [];
-
-/** Current editor difficulty */
+let deletedPresets = new Set();
 let editorDifficulty = 1;
-
-/** Whether filters are currently collapsed */
 let filtersCollapsed = false;
 
 // ======================== INIT ========================
@@ -856,52 +900,36 @@ function init() {
   loadCondiments();
   loadRestrictions();
   loadCustomIngredients();
+  loadDeletedPresets();
   renderCondiments();
   renderIngredients();
-  renderCustomIngredients();
   renderQuickRestrictions();
   renderRestrictionTags();
   updateIngredientCount();
   renderEditorIngredientCheckboxes();
   renderCustomRecipeList();
+  updateRestoreLink();
 
-  // Condiment section toggle
   document.getElementById('condiment-toggle').addEventListener('click', () => {
     toggleSection('condiment-body', 'condiment-toggle');
   });
-
-  // Ingredient section toggle
   document.getElementById('ingredient-toggle').addEventListener('click', () => {
     toggleSection('ingredient-body', 'ingredient-toggle');
   });
-
-  // Restrict section toggle
   document.getElementById('restrict-toggle').addEventListener('click', () => {
     toggleSection('restrict-body', 'restrict-toggle');
   });
-
-  // Editor section toggle
   document.getElementById('editor-toggle').addEventListener('click', () => {
     toggleSection('editor-body', 'editor-toggle');
   });
 
-  // Restrict input: Enter to add
   document.getElementById('restrict-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addRestriction();
-    }
+    if (e.key === 'Enter') { e.preventDefault(); addRestriction(); }
   });
-
-  // Custom ingredient input: Enter to add
   document.getElementById('custom-ing-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addCustomIngredient();
-    }
+    if (e.key === 'Enter') { e.preventDefault(); addCustomIngredient(); }
   });
 
-  // Diff picker buttons
   document.querySelectorAll('#diff-picker .tag-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#diff-picker .tag-btn').forEach(b => b.classList.remove('active'));
@@ -948,14 +976,33 @@ function saveRestrictions() {
 
 function loadCustomIngredients() {
   try {
-    const saved = localStorage.getItem('fridge_custom_ingredients');
-    if (saved) customIngredients = JSON.parse(saved);
+    // Try new format first
+    const saved = localStorage.getItem('fridge_custom_ingredients_v2');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      customIngredients = parsed.map(item => {
+        if (typeof item === 'string') return { name: item, category: '📦 其他' };
+        return item;
+      });
+      return;
+    }
+    // Migrate from old format
+    const old = localStorage.getItem('fridge_custom_ingredients');
+    if (old) {
+      const oldParsed = JSON.parse(old);
+      customIngredients = oldParsed.map(item => {
+        if (typeof item === 'string') return { name: item, category: '📦 其他' };
+        return item;
+      });
+      saveCustomIngredients();
+      localStorage.removeItem('fridge_custom_ingredients');
+    }
   } catch(e) { /* ignore */ }
 }
 
 function saveCustomIngredients() {
   try {
-    localStorage.setItem('fridge_custom_ingredients', JSON.stringify(customIngredients));
+    localStorage.setItem('fridge_custom_ingredients_v2', JSON.stringify(customIngredients));
   } catch(e) { /* ignore */ }
 }
 
@@ -965,13 +1012,35 @@ function saveCustomRecipes(recipes) {
   } catch(e) { /* ignore */ }
 }
 
+function loadDeletedPresets() {
+  try {
+    const saved = localStorage.getItem('fridge_deleted_presets');
+    if (saved) deletedPresets = new Set(JSON.parse(saved));
+  } catch(e) { /* ignore */ }
+}
+
+function saveDeletedPresets() {
+  try {
+    localStorage.setItem('fridge_deleted_presets', JSON.stringify([...deletedPresets]));
+  } catch(e) { /* ignore */ }
+}
+
+function updateRestoreLink() {
+  const link = document.getElementById('restore-link');
+  if (deletedPresets.size > 0) {
+    link.style.display = 'inline-block';
+    link.textContent = `🔄 恢复已删除的预设食材（${deletedPresets.size} 种）`;
+  } else {
+    link.style.display = 'none';
+  }
+}
+
 // ======================== FILTER COLLAPSE ========================
 
 function collapseFilters() {
   if (filtersCollapsed) return;
   filtersCollapsed = true;
 
-  // Collapse all filter sections
   ['condiment-body','ingredient-body','restrict-body'].forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
@@ -979,34 +1048,22 @@ function collapseFilters() {
     document.getElementById(id).classList.add('collapsed');
   });
 
-  // Show collapse bar
-  const bar = document.getElementById('filter-collapse-bar');
-  bar.style.display = 'block';
-
-  // Update summary
   const ingNames = [...ingredientState.keys()];
   const condCount = selectedCondiments.size;
-  const summary = document.getElementById('collapse-summary');
   const parts = [];
   if (ingNames.length > 0) parts.push(`已选 ${ingNames.length} 种食材`);
   if (condCount > 0) parts.push(`${condCount} 种调料`);
   if (restrictions.length > 0) parts.push(`${restrictions.length} 项忌口`);
-  summary.textContent = parts.length > 0 ? parts.join(' | ') : '未设置筛选条件';
+  document.getElementById('summary-text').textContent = parts.length > 0 ? parts.join(' | ') : '未设置筛选条件';
 
-  // Show FAB on mobile
+  document.getElementById('filter-summary-bar').classList.add('show');
   document.getElementById('fab-filter').classList.add('show');
-
-  // Scroll to results
-  setTimeout(() => {
-    document.getElementById('results-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
 }
 
 function expandFilters() {
   if (!filtersCollapsed) return;
   filtersCollapsed = false;
 
-  // Expand all filter sections
   ['condiment-body','ingredient-body','restrict-body'].forEach(id => {
     document.getElementById(id).classList.remove('hidden');
   });
@@ -1014,17 +1071,38 @@ function expandFilters() {
     document.getElementById(id).classList.remove('collapsed');
   });
 
-  // Hide collapse bar
-  document.getElementById('filter-collapse-bar').style.display = 'none';
-
-  // Hide FAB
+  document.getElementById('filter-summary-bar').classList.remove('show');
   document.getElementById('fab-filter').classList.remove('show');
-
-  // Scroll to filter area
   document.getElementById('filter-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ======================== RENDER ========================
+
+function getAvailableCategories() {
+  const cats = {};
+  for (const [cat, items] of Object.entries(INGREDIENT_CATEGORIES)) {
+    cats[cat] = items.filter(i => !deletedPresets.has(i));
+  }
+  for (const ci of customIngredients) {
+    const cat = ci.category || '📦 其他';
+    if (!cats[cat]) cats[cat] = [];
+    if (!cats[cat].includes(ci.name)) cats[cat].push(ci.name);
+  }
+  return cats;
+}
+
+function getAllIngredientNames() {
+  const names = [];
+  for (const [cat, items] of Object.entries(INGREDIENT_CATEGORIES)) {
+    for (const i of items) {
+      if (!deletedPresets.has(i)) names.push(i);
+    }
+  }
+  for (const ci of customIngredients) {
+    if (!names.includes(ci.name)) names.push(ci.name);
+  }
+  return names;
+}
 
 function renderCondiments() {
   const grid = document.getElementById('condiment-grid');
@@ -1041,43 +1119,28 @@ function renderCondiments() {
 
 function renderIngredients() {
   const area = document.getElementById('ingredient-area');
+  const cats = getAvailableCategories();
   let html = '';
-  for (const [cat, items] of Object.entries(INGREDIENT_CATEGORIES)) {
-    html += `<div class="cat-label">${cat}</div>`;
+
+  for (const [cat, items] of Object.entries(cats)) {
+    if (items.length === 0) continue;
+    const isCustomCat = !INGREDIENT_CATEGORIES[cat];
+    html += `<div class="cat-label">${cat}${isCustomCat ? ' ✨' : ''}</div>`;
     html += `<div class="ingredient-grid">`;
     for (const ing of items) {
       const checked = ingredientState.has(ing);
+      const isCustom = customIngredients.some(ci => ci.name === ing);
       html += `
-        <label class="ingredient-item${checked ? ' checked' : ''}" data-ing="${ing}">
+        <label class="ingredient-item${isCustom ? ' custom' : ''}${checked ? ' checked' : ''}" data-ing="${ing}">
           <span class="dot">${checked ? '✓' : ''}</span>
           <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleIngredient('${ing}', this.checked)">
           ${ing}
+          <span class="del-btn" onclick="event.stopPropagation(); deleteIngredient('${ing}', ${isCustom})">×</span>
         </label>`;
     }
     html += `</div>`;
   }
-  // Custom ingredients category
-  if (customIngredients.length > 0) {
-    html += `<div class="cat-label" id="custom-cat-label">✨ 自定义食材</div>`;
-    html += `<div class="ingredient-grid" id="custom-ing-grid">`;
-    html += customIngredients.map(ing => {
-      const checked = ingredientState.has(ing);
-      return `
-        <label class="ingredient-item custom${checked ? ' checked' : ''}" data-ing="${ing}">
-          <span class="dot">${checked ? '✓' : ''}</span>
-          <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleIngredient('${ing}', this.checked)">
-          ${ing}
-          <span class="del-btn" onclick="event.stopPropagation(); deleteCustomIngredient('${ing}')">×</span>
-        </label>`;
-    }).join('');
-    html += `</div>`;
-  }
   area.innerHTML = html;
-}
-
-function renderCustomIngredients() {
-  // Just re-render the whole ingredient area
-  renderIngredients();
 }
 
 function renderStatePanel() {
@@ -1181,42 +1244,62 @@ function setFreshness(ing, value) {
   if (state) { state.freshness = value; renderStatePanel(); }
 }
 
-// ======================== CUSTOM INGREDIENTS ========================
-
-function addCustomIngredient() {
-  const input = document.getElementById('custom-ing-input');
-  const val = input.value.trim();
-  if (!val) return;
-  if (customIngredients.includes(val)) {
-    input.value = '';
-    input.placeholder = '该食材已存在，请输入新食材…';
-    setTimeout(() => { input.placeholder = '+ 添加自定义食材（如腊肠、芝士）'; }, 1500);
-    return;
+function deleteIngredient(ing, isCustom) {
+  if (isCustom) {
+    if (!confirm(`确定要删除自定义食材「${ing}」吗？`)) return;
+    customIngredients = customIngredients.filter(i => i.name !== ing);
+    ingredientState.delete(ing);
+    saveCustomIngredients();
+  } else {
+    if (!confirm(`确定要删除预设食材「${ing}」吗？\n删除后可从底部链接恢复。`)) return;
+    deletedPresets.add(ing);
+    ingredientState.delete(ing);
+    saveDeletedPresets();
   }
-  // Check against preset ingredients
-  const allPreset = Object.values(INGREDIENT_CATEGORIES).flat();
-  if (allPreset.includes(val)) {
-    input.value = '';
-    input.placeholder = '该食材已在预设列表中～';
-    setTimeout(() => { input.placeholder = '+ 添加自定义食材（如腊肠、芝士）'; }, 1500);
-    return;
-  }
-  customIngredients.push(val);
-  saveCustomIngredients();
-  renderIngredients();
-  renderEditorIngredientCheckboxes();
-  input.value = '';
-}
-
-function deleteCustomIngredient(ing) {
-  if (!confirm(`确定要删除自定义食材「${ing}」吗？`)) return;
-  customIngredients = customIngredients.filter(i => i !== ing);
-  ingredientState.delete(ing);
-  saveCustomIngredients();
   renderIngredients();
   renderEditorIngredientCheckboxes();
   renderStatePanel();
   updateIngredientCount();
+  updateRestoreLink();
+}
+
+function restoreDeletedPresets() {
+  if (!confirm(`确定要恢复所有 ${deletedPresets.size} 种已删除的预设食材吗？`)) return;
+  deletedPresets.clear();
+  saveDeletedPresets();
+  renderIngredients();
+  renderEditorIngredientCheckboxes();
+  updateRestoreLink();
+}
+
+// ======================== CUSTOM INGREDIENTS ========================
+
+function addCustomIngredient() {
+  const input = document.getElementById('custom-ing-input');
+  const categorySelect = document.getElementById('custom-ing-category');
+  const val = input.value.trim();
+  const category = categorySelect.value;
+
+  if (!val) return;
+  if (customIngredients.some(ci => ci.name === val)) {
+    input.value = '';
+    input.placeholder = '该食材已存在～';
+    setTimeout(() => { input.placeholder = '+ 添加自定义食材'; }, 1500);
+    return;
+  }
+  const allPreset = Object.values(INGREDIENT_CATEGORIES).flat();
+  if (allPreset.includes(val) && !deletedPresets.has(val)) {
+    input.value = '';
+    input.placeholder = '该食材已在预设列表中～';
+    setTimeout(() => { input.placeholder = '+ 添加自定义食材'; }, 1500);
+    return;
+  }
+
+  customIngredients.push({ name: val, category: category });
+  saveCustomIngredients();
+  renderIngredients();
+  renderEditorIngredientCheckboxes();
+  input.value = '';
 }
 
 // ======================== RESTRICTIONS ========================
@@ -1255,13 +1338,12 @@ function toggleQuickRestriction(val) {
 // ======================== CUSTOM RECIPE EDITOR ========================
 
 function getAllAvailableIngredients() {
-  const preset = Object.values(INGREDIENT_CATEGORIES).flat();
-  return [...preset, ...customIngredients];
+  return getAllIngredientNames();
 }
 
 function renderEditorIngredientCheckboxes() {
-  const ingGrid = document.getElementById('editor-ing-checkboxes');
   const allIng = getAllAvailableIngredients();
+  const ingGrid = document.getElementById('editor-ing-checkboxes');
   ingGrid.innerHTML = allIng.map(ing =>
     `<label><input type="checkbox" value="${ing}"> ${ing}</label>`
   ).join('');
@@ -1280,16 +1362,13 @@ function addCustomRecipe() {
 
   if (!name) { alert('请输入菜名'); return; }
 
-  // Get selected ingredients
   const ingCheckboxes = document.querySelectorAll('#editor-ing-checkboxes input[type="checkbox"]:checked');
   const ings = [...ingCheckboxes].map(cb => cb.value);
   if (ings.length === 0) { alert('请至少选择一种食材'); return; }
 
-  // Get selected condiments
   const conCheckboxes = document.querySelectorAll('#editor-con-checkboxes input[type="checkbox"]:checked');
   const cons = [...conCheckboxes].map(cb => cb.value);
 
-  // Parse steps
   const steps = stepsRaw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
   if (steps.length < 2) { alert('请至少输入2步烹饪步骤（每行一步）'); return; }
 
@@ -1299,7 +1378,7 @@ function addCustomRecipe() {
     con: cons,
     diff: editorDifficulty,
     time: Math.max(1, Math.min(300, time)),
-    steps: steps.slice(0, 7), // max 7 steps
+    steps: steps.slice(0, 7),
     tip: tip || undefined,
     isCustom: true,
   };
@@ -1345,7 +1424,7 @@ function renderCustomRecipeList() {
   document.getElementById('custom-recipe-count').textContent = `${recipes.length} 个自定义菜谱`;
 
   if (recipes.length === 0) {
-    list.innerHTML = '<p style="font-size:12px;color:var(--text-lt);text-align:center;padding:12px;">暂无自定义菜谱，用上方表单添加吧～</p>';
+    list.innerHTML = '<p style="font-size:11px;color:var(--text-lt);text-align:center;padding:10px;">暂无自定义菜谱，用上方表单添加吧～</p>';
     return;
   }
 
@@ -1376,12 +1455,11 @@ function recommend() {
 
   const selectedIngredientNames = [...ingredientState.keys()];
   const availCondiments = [...selectedCondiments];
-  const allRecipes = getAllRecipes(); // from recipes.js
+  const allRecipes = getAllRecipes();
 
   const results = [];
 
   for (const recipe of allRecipes) {
-    // --- Filter: dietary restrictions ---
     const hasRestricted = restrictions.some(r => {
       const rl = r.toLowerCase();
       if (recipe.ing.some(i => i.toLowerCase().includes(rl))) return true;
@@ -1391,7 +1469,6 @@ function recommend() {
     });
     if (hasRestricted) continue;
 
-    // --- Ingredient matching ---
     const recipeIngs = recipe.ing;
     const matched = recipeIngs.filter(i => selectedIngredientNames.includes(i));
     const missingIngs = recipeIngs.filter(i => !selectedIngredientNames.includes(i));
@@ -1399,7 +1476,6 @@ function recommend() {
     if (matched.length === 0) continue;
     if (missingIngs.length > 2) continue;
 
-    // --- Condiment matching ---
     const missingConds = recipe.con.filter(c => !availCondiments.includes(c));
     const subMap = {};
     for (const mc of missingConds) {
@@ -1410,7 +1486,6 @@ function recommend() {
       }
     }
 
-    // --- Scoring ---
     const matchRatio = matched.length / recipeIngs.length;
     const matchPct = Math.round(matchRatio * 100);
 
@@ -1440,8 +1515,6 @@ function recommend() {
 
   results.sort((a, b) => b.score - a.score);
   renderResults(results);
-
-  // Auto-collapse filters after showing results
   collapseFilters();
 }
 
@@ -1455,34 +1528,33 @@ function renderResults(results) {
       <div class="empty-state">
         <span class="big-emoji">😅</span>
         <p>根据现有食材和忌口条件，暂未匹配到合适菜谱</p>
-        <p style="font-size:12px;color:var(--text-lt);margin-top:4px;">试试减少忌口项，或补充一些食材～</p>
+        <p style="font-size:11px;color:var(--text-lt);margin-top:3px;">试试减少忌口项，或补充一些食材～</p>
       </div>`;
+    area.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
 
   let html = `<div class="results-header">🍳 为你找到 <strong>${results.length}</strong> 个可选菜谱</div>`;
+  html += `<div class="results-grid">`;
 
   results.forEach((r, idx) => {
     const { recipe, matched, missingIngs, missingConds, subMap, matchPct, wiltedCount } = r;
     const isTopPick = idx === 0;
+    const cardId = `card-${idx}`;
 
-    // Match percentage color
     let pctClass = 'high';
     if (matchPct < 60) pctClass = 'low';
     else if (matchPct <= 80) pctClass = 'mid';
 
-    // Difficulty badge
     let diffBadge = '';
-    if (recipe.diff === 1) diffBadge = '<span class="badge badge-diff-1">⭐ 简单</span>';
-    else if (recipe.diff === 2) diffBadge = '<span class="badge badge-diff-2">⭐⭐ 中等</span>';
-    else diffBadge = '<span class="badge badge-diff-3">⭐⭐⭐ 复杂</span>';
+    if (recipe.diff === 1) diffBadge = '<span class="badge badge-diff-1">⭐简单</span>';
+    else if (recipe.diff === 2) diffBadge = '<span class="badge badge-diff-2">⭐⭐中等</span>';
+    else diffBadge = '<span class="badge badge-diff-3">⭐⭐⭐复杂</span>';
 
-    // Wilted badge
     const wiltedBadge = wiltedCount > 0
-      ? `<span class="badge badge-wilted">🔥 消耗${wiltedCount}样略蔫食材</span>`
+      ? `<span class="badge badge-wilted">🔥消耗${wiltedCount}略蔫</span>`
       : '';
 
-    // Ingredient tags
     let ingTagsHtml = '';
     for (const ing of recipe.ing) {
       if (matched.includes(ing)) {
@@ -1490,25 +1562,23 @@ function renderResults(results) {
         let extra = '';
         if (st && st.freshness === '略蔫') extra = ' 略蔫';
         else if (st && st.freshness === '冷冻') extra = ' 冷冻';
-        ingTagsHtml += `<span class="tag-sm match">✅ ${ing}${extra}</span>`;
+        ingTagsHtml += `<span class="tag-sm match">✅${ing}${extra}</span>`;
       } else {
-        ingTagsHtml += `<span class="tag-sm miss">❌ 缺 ${ing}</span>`;
+        ingTagsHtml += `<span class="tag-sm miss">❌${ing}</span>`;
       }
     }
 
-    // Condiment tags
     let condHtml = '';
     for (const c of recipe.con) {
       if (!missingConds.includes(c)) {
-        condHtml += `<span class="tag-sm match">🧂 ${c}</span>`;
+        condHtml += `<span class="tag-sm match">🧂${c}</span>`;
       } else if (subMap[c]) {
-        condHtml += `<span class="tag-sm sub-ok">🔄 ${c} → ${subMap[c].note}</span>`;
+        condHtml += `<span class="tag-sm sub-ok">🔄${c}→${subMap[c].items.join('+') || '省略'}</span>`;
       } else {
-        condHtml += `<span class="tag-sm miss">⚠️ 缺 ${c}</span>`;
+        condHtml += `<span class="tag-sm miss">⚠️${c}</span>`;
       }
     }
 
-    // Missing summary
     let missingSummaryHtml = '';
     const noSubMissing = missingConds.filter(c => !subMap[c]);
     if (missingIngs.length > 0 || noSubMissing.length > 0) {
@@ -1517,51 +1587,62 @@ function renderResults(results) {
         missingSummaryHtml += `<div class="ms-row">🔻 缺少食材：<strong>${missingIngs.join('、')}</strong></div>`;
       }
       if (noSubMissing.length > 0) {
-        missingSummaryHtml += `<div class="ms-row">⚠️ 缺少且无平替的调料：<strong>${noSubMissing.join('、')}</strong>（建议采购）</div>`;
+        missingSummaryHtml += `<div class="ms-row">⚠️ 缺调料：<strong>${noSubMissing.join('、')}</strong></div>`;
       }
       missingSummaryHtml += '</div>';
     }
 
-    // Steps
     const stepsHtml = recipe.steps.map((s, i) => `<li>${i + 1}. ${s}</li>`).join('');
 
-    // Search links
     const encodedName = encodeURIComponent(recipe.name + ' 食谱');
     const encodedNameBili = encodeURIComponent(recipe.name + ' 做法');
 
-    // Custom badge
-    const customBadge = recipe.isCustom ? '<span style="font-size:10px;color:var(--blue);font-weight:600;">✨ 自定义</span>' : '';
+    const customBadge = recipe.isCustom ? '<span style="font-size:11px;color:var(--blue);font-weight:700;">✨自定义</span>' : '';
 
     html += `
       <div class="recipe-card${isTopPick ? ' top-pick' : ''}">
         <div class="card-header">
-          <h3>${isTopPick ? '🏆 ' : ''}${recipe.name} ${customBadge}</h3>
-          <span class="match-pct ${pctClass}">📊 ${matchPct}% 匹配</span>
+          <h3>${isTopPick ? '🏆' : ''} ${recipe.name} ${customBadge}</h3>
+          <span class="match-pct ${pctClass}">${matchPct}%</span>
         </div>
-        <div class="badges" style="justify-content:flex-start;margin-bottom:8px;">
+        <div class="badges" style="justify-content:flex-start;">
           ${wiltedBadge}
-          <span class="badge badge-time">⏱ ${recipe.time}分钟</span>
+          <span class="badge badge-time">⏱${recipe.time}分钟</span>
           ${diffBadge}
         </div>
         <div class="tags-row">${ingTagsHtml}</div>
-        <div style="font-size:11px;color:var(--text-lt);margin-bottom:6px;">所需调料：</div>
+        <div style="font-size:10px;color:var(--text-lt);">调料：</div>
         <div class="tags-row">${condHtml}</div>
         ${missingSummaryHtml}
-        ${recipe.tip ? `<div style="font-size:11px;color:var(--brown-lt);margin-top:6px;">👨‍🍳 ${recipe.tip}</div>` : ''}
-        <ul class="steps-list">${stepsHtml}</ul>
+        ${recipe.tip ? `<div style="font-size:10px;color:var(--brown-lt);">👨‍🍳 ${recipe.tip}</div>` : ''}
+        <div class="steps-toggle" onclick="toggleSteps('${cardId}')">
+          📝 展开步骤 ▼
+        </div>
+        <ul class="steps-list collapsed" id="steps-${cardId}">${stepsHtml}</ul>
         <div class="search-links">
-          <a class="search-link xhs" href="https://www.xiaohongshu.com/search_result?keyword=${encodedName}" target="_blank" rel="noopener">
-            📕 小红书搜食谱
-          </a>
-          <a class="search-link bili" href="https://search.bilibili.com/all?keyword=${encodedNameBili}" target="_blank" rel="noopener">
-            📺 B站看视频
-          </a>
+          <a class="search-link xhs" href="https://www.xiaohongshu.com/search_result?keyword=${encodedName}" target="_blank" rel="noopener">📕 小红书</a>
+          <a class="search-link bili" href="https://search.bilibili.com/all?keyword=${encodedNameBili}" target="_blank" rel="noopener">📺 B站</a>
         </div>
       </div>`;
   });
 
+  html += `</div>`;
   area.innerHTML = html;
   area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleSteps(cardId) {
+  const list = document.getElementById('steps-' + cardId);
+  const toggle = list.previousElementSibling;
+  if (list.classList.contains('collapsed')) {
+    list.classList.remove('collapsed');
+    list.style.maxHeight = list.scrollHeight + 'px';
+    toggle.textContent = '📝 收起步骤 ▲';
+  } else {
+    list.style.maxHeight = '0';
+    list.classList.add('collapsed');
+    toggle.textContent = '📝 展开步骤 ▼';
+  }
 }
 
 // ======================== BOOT ========================
