@@ -757,7 +757,6 @@ input, textarea, select { font-family: inherit; outline: none; }
             <option value="🥬 蔬菜">🥬 蔬菜</option>
             <option value="🥩 肉类">🥩 肉类</option>
             <option value="🍚 主食">🍚 主食</option>
-            <option value="🫘 豆制品">🫘 豆制品</option>
             <option value="🥛 蛋奶">🥛 蛋奶</option>
             <option value="📦 其他">📦 其他</option>
           </select>
@@ -857,11 +856,10 @@ input, textarea, select { font-family: inherit; outline: none; }
 
 /** Ingredient categories (v2.0 expanded) */
 const INGREDIENT_CATEGORIES = {
-  '🥬 蔬菜': ['番茄','南瓜','青菜','土豆','茄子','青椒','白菜','胡萝卜','洋葱','黄瓜','豆角','西兰花','玉米','蘑菇','金针菇','冬瓜','丝瓜','辣椒','豆芽','莲藕','山药','生菜','芹菜','花菜','西葫芦','秋葵','荷兰豆','莴笋','茼蒿','苦瓜'],
-  '🥩 肉类': ['鸡蛋','鸡胸肉','五花肉','牛肉','虾仁','排骨','腊肠','火腿','培根','鸡腿','牛肉丸','午餐肉','鱼'],
+  '🥬 蔬菜': ['番茄','南瓜','青菜','土豆','茄子','青椒','白菜','胡萝卜','洋葱','黄瓜','豆角','西兰花','玉米','蘑菇','金针菇','冬瓜','丝瓜','辣椒','豆芽','莲藕','山药','生菜','芹菜','花菜','西葫芦','秋葵','荷兰豆','莴笋','茼蒿','苦瓜','豆腐','腐竹','豆皮','毛豆','豆干','油豆腐'],
+  '🥩 肉类': ['鸡胸肉','五花肉','牛肉','虾仁','排骨','腊肠','火腿','培根','鸡腿','牛肉丸','午餐肉','鱼'],
   '🍚 主食': ['米饭','面条','粉丝','饺子','馒头','面包'],
-  '🫘 豆制品': ['豆腐','腐竹','豆皮','毛豆','豆干','油豆腐'],
-  '🥛 蛋奶': ['芝士','皮蛋','咸鸭蛋','牛奶','黄油'],
+  '🥛 蛋奶': ['鸡蛋','芝士','皮蛋','咸鸭蛋','牛奶','黄油'],
 };
 
 /** All condiments */
@@ -1439,6 +1437,216 @@ function renderCustomRecipeList() {
   `).join('');
 }
 
+// ======================== TEMPLATE ENGINE ========================
+
+function getIngredientCategory(name) {
+  for (const [cat, items] of Object.entries(INGREDIENT_CATEGORIES)) {
+    if (items.includes(name)) return cat;
+  }
+  // Check custom ingredients
+  const ci = customIngredients.find(c => c.name === name);
+  if (ci) return ci.category || '📦 其他';
+  return '📦 其他';
+}
+
+function hasCategory(ings, catKey) {
+  return ings.some(i => getIngredientCategory(i) === catKey);
+}
+
+function firstOf(ings, catKey) {
+  return ings.find(i => getIngredientCategory(i) === catKey) || ings[0];
+}
+
+function pickByCat(ings, catKey) {
+  return ings.filter(i => getIngredientCategory(i) === catKey);
+}
+
+const COOKING_TEMPLATES = [
+  // === 炒菜类 ===
+  { name:'XX炒YY',
+    cond: (ings, cats) => cats['🥬 蔬菜'].length + cats['🥩 肉类'].length + cats['🥛 蛋奶'].length >= 2,
+    gen: (ings) => {
+      const veg = firstOf(ings, '🥬 蔬菜');
+      const other = ings.find(i => i !== veg);
+      return { name:`${veg}炒${other}`, ing:[veg, other], con:['生抽','盐','蒜'], diff:1, time:10,
+        steps:[`${other}切好备用`,`${veg}洗净切好`,`热锅加油爆香蒜末`,`先下${other}翻炒至变色`,`加入${veg}大火快炒，加盐生抽出锅`],
+        tip:'大火快炒保持脆嫩口感' };
+    }
+  },
+  { name:'清炒XX',
+    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1,
+    gen: (ings) => {
+      const veg = firstOf(ings, '🥬 蔬菜');
+      return { name:`清炒${veg}`, ing:[veg], con:['蒜','盐'], diff:1, time:5,
+        steps:[`${veg}洗净切好沥干`,`热锅凉油爆香蒜末`,`大火下${veg}快炒`,`加盐翻炒均匀`,`${veg}断生立刻出锅`],
+        tip:'大火快炒保持翠绿脆嫩' };
+    }
+  },
+  { name:'蒜蓉XX',
+    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1 && selectedCondiments.has('蒜'),
+    gen: (ings) => {
+      const veg = firstOf(ings, '🥬 蔬菜');
+      return { name:`蒜蓉${veg}`, ing:[veg], con:['蒜','盐','蚝油'], diff:1, time:8,
+        steps:[`${veg}洗净切好，焯水1分钟`,`蒜切末备用`,`热锅加油小火炒香蒜末至微黄`,`下${veg}翻炒均匀`,`加盐蚝油调味出锅`],
+        tip:'蒜末小火慢炒出香味是关键' };
+    }
+  },
+  { name:'XX炒蛋',
+    cond: (ings, cats) => cats['🥛 蛋奶'].some(i => ['鸡蛋'].includes(i)) && ings.length >= 2,
+    gen: (ings) => {
+      const other = ings.find(i => getIngredientCategory(i) !== '🥛 蛋奶' || !['鸡蛋'].includes(i)) || ings.find(i => i !== '鸡蛋');
+      return { name:`${other}炒蛋`, ing:['鸡蛋', other], con:['盐','葱'], diff:1, time:8,
+        steps:[`鸡蛋打散加盐搅匀`,`${other}切好备用`,`热锅炒鸡蛋盛出`,`锅中加油炒${other}至断生`,`倒回鸡蛋翻炒均匀撒葱花出锅`],
+        tip:'鸡蛋先炒盛出最后回锅更嫩' };
+    }
+  },
+  { name:'XX烧豆腐',
+    cond: (ings, cats) => ings.some(i => i === '豆腐') && ings.length >= 2,
+    gen: (ings) => {
+      const other = ings.find(i => i !== '豆腐');
+      return { name:`${other}烧豆腐`, ing:['豆腐', other], con:['生抽','蚝油','蒜','盐'], diff:2, time:15,
+        steps:[`豆腐切块煎至两面金黄盛出`,`${other}切好备用`,`热锅爆香蒜末下${other}翻炒`,`加入豆腐、生抽、蚝油`,`加少量水焖3分钟收汁出锅`],
+        tip:'豆腐煎到表面金黄起壳更吸味' };
+    }
+  },
+
+  // === 主食类 ===
+  { name:'XX煮面',
+    cond: (ings, cats) => ings.some(i => i === '面条') && ings.length >= 2,
+    gen: (ings) => {
+      const other = ings.find(i => i !== '面条');
+      return { name:`${other}煮面`, ing:['面条', other], con:['生抽','盐','葱','姜'], diff:1, time:12,
+        steps:[`${other}洗净切好`,`锅中加水烧开`,`下面条煮至7分熟`,`加入${other}一起煮`,`加生抽盐调味撒葱花出锅`],
+        tip:'面条不要煮太软保留口感' };
+    }
+  },
+  { name:'XX炒饭',
+    cond: (ings, cats) => ings.some(i => i === '米饭') && ings.length >= 2,
+    gen: (ings) => {
+      const other = ings.find(i => i !== '米饭');
+      return { name:`${other}炒饭`, ing:['米饭', other], con:['盐','生抽','葱'], diff:1, time:8,
+        steps:[`${other}切丁备用`,`热锅加油，下${other}翻炒`,`加入米饭炒散`,`加盐生抽翻炒均匀`,`撒葱花出锅`],
+        tip:'隔夜饭炒出来粒粒分明' };
+    }
+  },
+
+  // === 汤类 ===
+  { name:'XX蛋花汤',
+    cond: (ings, cats) => ings.some(i => i === '鸡蛋') && ings.length >= 2,
+    gen: (ings) => {
+      const other = ings.find(i => i !== '鸡蛋');
+      return { name:`${other}蛋花汤`, ing:['鸡蛋', other], con:['盐','葱','香油','淀粉'], diff:1, time:10,
+        steps:[`${other}切好，鸡蛋打散`,`锅中加水烧开下${other}煮2分钟`,`水淀粉勾薄芡`,`转小火淋入蛋液搅出蛋花`,`加盐香油葱花出锅`],
+        tip:'淋蛋液时转小火蛋花更漂亮' };
+    }
+  },
+  { name:'XXYY汤',
+    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1 && (cats['🥩 肉类'].length >= 1 || cats['🥛 蛋奶'].length >= 1),
+    gen: (ings) => {
+      const veg = firstOf(ings, '🥬 蔬菜');
+      const other = ings.find(i => getIngredientCategory(i) !== '🥬 蔬菜');
+      return { name:`${veg}${other}汤`, ing:[veg, other], con:['盐','姜','料酒','葱'], diff:1, time:20,
+        steps:[`${other}处理干净切好`,`锅中加水放入${other}和姜片`,`大火烧开撇去浮沫转小火煮15分钟`,`加入${veg}再煮5分钟`,`加盐调味撒葱花出锅`],
+        tip:'水一次加足，中途尽量不加水' };
+    }
+  },
+
+  // === 凉拌类 ===
+  { name:'凉拌XX',
+    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1,
+    gen: (ings) => {
+      const veg = firstOf(ings, '🥬 蔬菜');
+      return { name:`凉拌${veg}`, ing:[veg], con:['生抽','醋','蒜','香油','糖'], diff:1, time:12,
+        steps:[`${veg}洗净焯水至断生`,`捞出过凉水沥干`,`调碗汁：生抽+醋+糖+蒜末+香油`,`将碗汁倒入${veg}拌匀`,`腌制10分钟更入味`],
+        tip:'焯水后过凉水保持脆爽口感' };
+    }
+  },
+
+  // === 一锅炖 ===
+  { name:'XX大乱炖',
+    cond: (ings, cats) => ings.length >= 3,
+    gen: (ings) => {
+      const main = ings.slice(0, 3);
+      return { name:`${main.join('')}大乱炖`, ing:main, con:['生抽','老抽','盐','姜','蒜','豆瓣酱'], diff:2, time:30,
+        steps:[`所有食材洗净切块`,`热锅加油炒香姜蒜豆瓣酱`,`下${main[0]}和${main[1]}翻炒`,`加水没过食材炖20分钟`,`加${main[2]}再炖5分钟大火收汁`],
+        tip:'一锅端的快乐，食材随意搭配都好吃' };
+    }
+  },
+];
+
+function generateTemplateRecipes(selectedNames) {
+  const availConds = [...selectedCondiments];
+  const cats = {};
+  for (const name of selectedNames) {
+    const c = getIngredientCategory(name);
+    if (!cats[c]) cats[c] = [];
+    cats[c].push(name);
+  }
+
+  const results = [];
+  for (const tpl of COOKING_TEMPLATES) {
+    if (!tpl.cond(selectedNames, cats)) continue;
+
+    // Check restriction filter
+    const recipe = tpl.gen(selectedNames);
+    const hasRestricted = restrictions.some(r => {
+      const rl = r.toLowerCase();
+      if (recipe.ing.some(i => i.toLowerCase().includes(rl))) return true;
+      if (recipe.name.toLowerCase().includes(rl)) return true;
+      if (recipe.con.some(c => c.toLowerCase().includes(rl))) return true;
+      return false;
+    });
+    if (hasRestricted) continue;
+
+    // All ingredients are "matched" since we use only selected ones
+    const matched = recipe.ing.filter(i => selectedNames.includes(i));
+    const missingIngs = recipe.ing.filter(i => !selectedNames.includes(i));
+    if (missingIngs.length > 0) continue; // template should only use selected ingredients
+
+    // Condiment scoring
+    const missingConds = recipe.con.filter(c => !availConds.includes(c));
+    const subMap = {};
+    for (const mc of missingConds) {
+      if (SUBSTITUTES[mc]) {
+        const sub = SUBSTITUTES[mc];
+        const hasSub = sub.items.length === 0 || sub.items.every(si => availConds.includes(si));
+        if (hasSub) subMap[mc] = sub;
+      }
+    }
+
+    const matchPct = 100; // template uses only selected ingredients
+    const wiltedCount = recipe.ing.filter(i => {
+      const st = ingredientState.get(i);
+      return st && st.freshness === '略蔫';
+    }).length;
+
+    // Templates score lower than built-in recipes
+    let score = 40 + wiltedCount * 15;
+    if (missingConds.length === 0) score += 8;
+    else if (Object.keys(subMap).length === missingConds.length) score += 4;
+    score += (3 - recipe.diff) * 2;
+
+    results.push({
+      recipe: { ...recipe, isTemplate: true },
+      matched,
+      missingIngs,
+      missingConds,
+      subMap,
+      score: Math.round(score * 10) / 10,
+      matchPct,
+      wiltedCount,
+    });
+  }
+
+  // Deduplicate by recipe name
+  const seen = new Set();
+  return results.filter(r => {
+    if (seen.has(r.recipe.name)) return false;
+    seen.add(r.recipe.name);
+    return true;
+  });
+}
+
 // ======================== MATCHING ENGINE ========================
 
 function recommend() {
@@ -1514,13 +1722,23 @@ function recommend() {
   }
 
   results.sort((a, b) => b.score - a.score);
-  renderResults(results);
+
+  // Generate template-based recipes for uncovered ingredients
+  const templateResults = generateTemplateRecipes(selectedIngredientNames);
+  // Merge: built-in first, then templates (no duplicates by name)
+  const builtInNames = new Set(results.map(r => r.recipe.name));
+  const uniqueTemplates = templateResults.filter(r => !builtInNames.has(r.recipe.name));
+
+  const allResults = [...results, ...uniqueTemplates];
+  allResults.sort((a, b) => b.score - a.score);
+
+  renderResults(allResults, results.length);
   collapseFilters();
 }
 
 // ======================== RENDER RESULTS ========================
 
-function renderResults(results) {
+function renderResults(results, builtInCount) {
   const area = document.getElementById('results-area');
 
   if (results.length === 0) {
@@ -1534,7 +1752,16 @@ function renderResults(results) {
     return;
   }
 
-  let html = `<div class="results-header">🍳 为你找到 <strong>${results.length}</strong> 个可选菜谱</div>`;
+  const actualBuiltIn = builtInCount || results.filter(r => !r.recipe.isTemplate).length;
+  const templateCount = results.filter(r => r.recipe.isTemplate).length;
+
+  let html = `<div class="results-header">🍳 为你找到 <strong>${results.length}</strong> 个可选菜谱`;
+  if (actualBuiltIn > 0 && templateCount > 0) {
+    html += `（${actualBuiltIn} 道内置匹配 + ${templateCount} 道智能生成）`;
+  } else if (templateCount > 0) {
+    html += `（智能模板生成）`;
+  }
+  html += `</div>`;
   html += `<div class="results-grid">`;
 
   results.forEach((r, idx) => {
@@ -1598,11 +1825,12 @@ function renderResults(results) {
     const encodedNameBili = encodeURIComponent(recipe.name + ' 做法');
 
     const customBadge = recipe.isCustom ? '<span style="font-size:11px;color:var(--blue);font-weight:700;">✨自定义</span>' : '';
+    const templateBadge = recipe.isTemplate ? '<span style="font-size:11px;color:var(--orange);font-weight:700;">🤖智能生成</span>' : '';
 
     html += `
       <div class="recipe-card${isTopPick ? ' top-pick' : ''}">
         <div class="card-header">
-          <h3>${isTopPick ? '🏆' : ''} ${recipe.name} ${customBadge}</h3>
+          <h3>${isTopPick ? '🏆' : ''} ${recipe.name} ${customBadge}${templateBadge}</h3>
           <span class="match-pct ${pctClass}">${matchPct}%</span>
         </div>
         <div class="badges" style="justify-content:flex-start;">
@@ -1627,6 +1855,27 @@ function renderResults(results) {
   });
 
   html += `</div>`;
+
+  // Online search section
+  const selectedNames = [...ingredientState.keys()];
+  if (selectedNames.length > 0) {
+    const query = selectedNames.slice(0, 5).join(' ') + ' 食谱';
+    const encoded = encodeURIComponent(query);
+    const encodedDC = encodeURIComponent(selectedNames.slice(0, 5).join(' ') + ' 做法');
+    html += `
+      <div class="section" style="margin-top:14px;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:var(--brown);margin-bottom:6px;">
+          🔍 用「${selectedNames.slice(0, 4).join('、')}${selectedNames.length > 4 ? '等' : ''}」在线搜更多菜谱
+        </div>
+        <div class="search-links" style="justify-content:center;">
+          <a class="search-link xhs" href="https://www.xiaohongshu.com/search_result?keyword=${encoded}" target="_blank" rel="noopener">📕 小红书搜食谱</a>
+          <a class="search-link bili" href="https://search.bilibili.com/all?keyword=${encodedDC}" target="_blank" rel="noopener">📺 B站看视频</a>
+          <a class="search-link" style="background:#FFF5F0;color:#D94A4A;border:1px solid #FAD5C0;" href="https://www.xiachufang.com/search/?keyword=${encoded}" target="_blank" rel="noopener">🍳 下厨房</a>
+        </div>
+        <p style="font-size:10px;color:var(--text-lt);margin-top:4px;">点击跳转外部平台，发现更多灵感</p>
+      </div>`;
+  }
+
   area.innerHTML = html;
   area.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
