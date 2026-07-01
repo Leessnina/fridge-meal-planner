@@ -1464,37 +1464,37 @@ function pickByCat(ings, catKey) {
 const COOKING_TEMPLATES = [
   // === 炒菜类 ===
   { name:'XX炒YY',
-    cond: (ings, cats) => cats['🥬 蔬菜'].length + cats['🥩 肉类'].length + cats['🥛 蛋奶'].length >= 2,
+    cond: (ings, cats) => ings.length >= 2,
     gen: (ings) => {
-      const veg = firstOf(ings, '🥬 蔬菜');
-      const other = ings.find(i => i !== veg);
-      return { name:`${veg}炒${other}`, ing:[veg, other], con:['生抽','盐','蒜'], diff:1, time:10,
-        steps:[`${other}切好备用`,`${veg}洗净切好`,`热锅加油爆香蒜末`,`先下${other}翻炒至变色`,`加入${veg}大火快炒，加盐生抽出锅`],
+      const a = ings[0];
+      const b = ings[1];
+      return { name:`${a}炒${b}`, ing:[a, b], con:['生抽','盐','蒜'], diff:1, time:10,
+        steps:[`${b}切好备用`,`${a}洗净切好`,`热锅加油爆香蒜末`,`先下${b}翻炒至变色`,`加入${a}大火快炒，加盐生抽出锅`],
         tip:'大火快炒保持脆嫩口感' };
     }
   },
   { name:'清炒XX',
-    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1,
+    cond: (ings, cats) => ings.length >= 1,
     gen: (ings) => {
-      const veg = firstOf(ings, '🥬 蔬菜');
+      const veg = ings[0];
       return { name:`清炒${veg}`, ing:[veg], con:['蒜','盐'], diff:1, time:5,
         steps:[`${veg}洗净切好沥干`,`热锅凉油爆香蒜末`,`大火下${veg}快炒`,`加盐翻炒均匀`,`${veg}断生立刻出锅`],
         tip:'大火快炒保持翠绿脆嫩' };
     }
   },
   { name:'蒜蓉XX',
-    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1 && selectedCondiments.has('蒜'),
+    cond: (ings, cats) => ings.length >= 1 && selectedCondiments.has('蒜'),
     gen: (ings) => {
-      const veg = firstOf(ings, '🥬 蔬菜');
+      const veg = ings[0];
       return { name:`蒜蓉${veg}`, ing:[veg], con:['蒜','盐','蚝油'], diff:1, time:8,
         steps:[`${veg}洗净切好，焯水1分钟`,`蒜切末备用`,`热锅加油小火炒香蒜末至微黄`,`下${veg}翻炒均匀`,`加盐蚝油调味出锅`],
         tip:'蒜末小火慢炒出香味是关键' };
     }
   },
   { name:'XX炒蛋',
-    cond: (ings, cats) => cats['🥛 蛋奶'].some(i => ['鸡蛋'].includes(i)) && ings.length >= 2,
+    cond: (ings, cats) => ings.some(i => i === '鸡蛋') && ings.length >= 2,
     gen: (ings) => {
-      const other = ings.find(i => getIngredientCategory(i) !== '🥛 蛋奶' || !['鸡蛋'].includes(i)) || ings.find(i => i !== '鸡蛋');
+      const other = ings.find(i => i !== '鸡蛋');
       return { name:`${other}炒蛋`, ing:['鸡蛋', other], con:['盐','葱'], diff:1, time:8,
         steps:[`鸡蛋打散加盐搅匀`,`${other}切好备用`,`热锅炒鸡蛋盛出`,`锅中加油炒${other}至断生`,`倒回鸡蛋翻炒均匀撒葱花出锅`],
         tip:'鸡蛋先炒盛出最后回锅更嫩' };
@@ -1541,21 +1541,21 @@ const COOKING_TEMPLATES = [
     }
   },
   { name:'XXYY汤',
-    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1 && (cats['🥩 肉类'].length >= 1 || cats['🥛 蛋奶'].length >= 1),
+    cond: (ings, cats) => ings.length >= 2,
     gen: (ings) => {
-      const veg = firstOf(ings, '🥬 蔬菜');
-      const other = ings.find(i => getIngredientCategory(i) !== '🥬 蔬菜');
-      return { name:`${veg}${other}汤`, ing:[veg, other], con:['盐','姜','料酒','葱'], diff:1, time:20,
-        steps:[`${other}处理干净切好`,`锅中加水放入${other}和姜片`,`大火烧开撇去浮沫转小火煮15分钟`,`加入${veg}再煮5分钟`,`加盐调味撒葱花出锅`],
+      const a = ings[0];
+      const b = ings[1];
+      return { name:`${a}${b}汤`, ing:[a, b], con:['盐','姜','料酒','葱'], diff:1, time:20,
+        steps:[`${b}处理干净切好`,`锅中加水放入${b}和姜片`,`大火烧开撇去浮沫转小火煮15分钟`,`加入${a}再煮5分钟`,`加盐调味撒葱花出锅`],
         tip:'水一次加足，中途尽量不加水' };
     }
   },
 
   // === 凉拌类 ===
   { name:'凉拌XX',
-    cond: (ings, cats) => cats['🥬 蔬菜'].length >= 1,
+    cond: (ings, cats) => ings.length >= 1,
     gen: (ings) => {
-      const veg = firstOf(ings, '🥬 蔬菜');
+      const veg = ings[0];
       return { name:`凉拌${veg}`, ing:[veg], con:['生抽','醋','蒜','香油','糖'], diff:1, time:12,
         steps:[`${veg}洗净焯水至断生`,`捞出过凉水沥干`,`调碗汁：生抽+醋+糖+蒜末+香油`,`将碗汁倒入${veg}拌匀`,`腌制10分钟更入味`],
         tip:'焯水后过凉水保持脆爽口感' };
